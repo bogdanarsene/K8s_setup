@@ -113,6 +113,8 @@ current-context: ${serviceAccount}@${clusterName}
 # configure Grafana
 # Step 1: Clone kube-prometheus project
 # Use git command to clone kube-prometheus project to your local system:
+cd ..
+
 git clone https://github.com/prometheus-operator/kube-prometheus.git
 # Navigate to the kube-prometheus directory:
 cd kube-prometheus
@@ -133,7 +135,7 @@ kubectl get pods -n monitoring
 # To list all the services created you’ll run the command:
 kubectl get svc -n monitoring
 
-cd ..
+cd ../K8s_setup
 
 # # Step 4: Access Prometheus, Grafana, and Alertmanager dashboards
 # # Method 1
