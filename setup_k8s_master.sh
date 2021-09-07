@@ -17,7 +17,7 @@ kubectl cluster-info
 
 # Step 6: Install network plugin on Master
 kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
-
+sleep 5
 kubectl get nodes -o wide
 
 # Deploy Kubernetes Dashboard
@@ -26,6 +26,7 @@ wget https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/re
 mv recommended.yaml kubernetes-dashboard-deployment.yml
 sed -i -z 's/  selector:\n    k8s-app: kubernetes-dashboard/  selector:\n    k8s-app: kubernetes-dashboard\n  type: NodePort/' kubernetes-dashboard-deployment.yml
 kubectl apply -f kubernetes-dashboard-deployment.yml
+sleep 5
 kubectl get deployments -n kubernetes-dashboard
 kubectl get pods -n kubernetes-dashboard
 kubectl get service -n kubernetes-dashboard

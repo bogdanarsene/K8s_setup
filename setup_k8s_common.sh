@@ -68,3 +68,4 @@ sudo tee -a /etc/containerd/config.toml <<< "plugins.cri.systemd_cgroup = true"
 # Export persistent environment variable
 sudo tee -a /etc/profile.d/kubeconfig.sh <<< "export KUBECONFIG=$HOME/.kube/config"
 sudo chmod +x /etc/profile.d/kubeconfig.sh
+/etc/profile.d/kubeconfig.sh

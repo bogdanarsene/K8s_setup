@@ -17,4 +17,6 @@ Delegate=cpu cpuset io memory pids
 EOF
 sudo systemctl daemon-reload
 
+sleep 5
+
 sudo systemctl reboot
