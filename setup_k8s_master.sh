@@ -168,9 +168,9 @@ echo "
 MASTER_IP=$(hostname -I | cut -d' ' -f1)
 
 DASHBOARD_PORT=$(kubectl get service -n kubernetes-dashboard | grep kubernetes-dashboard | grep -o -P '(?<=443:).*(?=/TCP)')
-ALERTMANAGER_PORT=$(kubectl get service -n monitoring | grep alertmanager | grep -o -P '(?<=:).*(?=/TCP)')
+ALERTMANAGER_PORT=$(kubectl get service -n monitoring | grep alertmanager-main | grep -o -P '(?<=:).*(?=/TCP)')
 GRAFANA_PORT=$(kubectl get service -n monitoring | grep grafana | grep -o -P '(?<=:).*(?=/TCP)')
-PROMETHEUS_PORT=$(kubectl get service -n monitoring | grep prometheus | grep -o -P '(?<=:).*(?=/TCP)')
+PROMETHEUS_PORT=$(kubectl get service -n monitoring | grep prometheus-k8s | grep -o -P '(?<=:).*(?=/TCP)')
 
 echo Dadhboard: '  ' https://$MASTER_IP:$DASHBOARD_PORT/
 echo Alertmanager:   http://$MASTER_IP:$ALERTMANAGER_PORT/
@@ -181,6 +181,7 @@ sudo chmod +x get_servers.sh
 
 echo "
 kubeadm token create --print-join-command >> join_command
+sed -i '1s;^;sudo ;' join_command
 cat join_command
 " > get_join_command.sh
 sudo chmod +x get_join_command.sh
