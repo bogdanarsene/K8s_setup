@@ -79,7 +79,7 @@ kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | gre
 # The script returns a kubeconfig for the service account given
 # you need to have kubectl on PATH with the context set to the cluster you want to create the config for
 
-DASHBOARD_PORT=$(kubectl get service -n kubernetes-dashboard | grep kubernetes-dashboard | grep -o -P '(?<=443:).*(?=/TCP)')
+DASHBOARD_PORT=$(kubectl get service -n kubernetes-dashboard | grep NodePort | grep dashboard | grep -o -P '(?<=443:).*(?=/TCP)')
 
 # Cosmetics for the created config
 clusterName=kubernetes
@@ -180,17 +180,17 @@ kubectl -n monitoring get svc  | grep NodePort
 ################################################################################
 
 echo "
-MASTER_IP=$(hostname -I | cut -d' ' -f1)
+MASTER_IP=\$(hostname -I | cut -d' ' -f1)
 
-DASHBOARD_PORT=$(kubectl get service -n kubernetes-dashboard | grep NodePort | grep dashboard | grep -o -P '(?<=443:).*(?=/TCP)')
-ALERTMANAGER_PORT=$(kubectl get service -n monitoring | grep NodePort | grep alertmanager | grep -o -P '(?<=:).*(?=/TCP)')
-GRAFANA_PORT=$(kubectl get service -n monitoring | grep NodePort | grep grafana | grep -o -P '(?<=:).*(?=/TCP)')
-PROMETHEUS_PORT=$(kubectl get service -n monitoring | grep NodePort | grep prometheus | grep -o -P '(?<=:).*(?=/TCP)')
+DASHBOARD_PORT=\$(kubectl get service -n kubernetes-dashboard | grep NodePort | grep dashboard | grep -o -P '(?<=443:).*(?=/TCP)')
+ALERTMANAGER_PORT=\$(kubectl get service -n monitoring | grep NodePort | grep alertmanager | grep -o -P '(?<=:).*(?=/TCP)')
+GRAFANA_PORT=\$(kubectl get service -n monitoring | grep NodePort | grep grafana | grep -o -P '(?<=:).*(?=/TCP)')
+PROMETHEUS_PORT=\$(kubectl get service -n monitoring | grep NodePort | grep prometheus | grep -o -P '(?<=:).*(?=/TCP)')
 
-echo Dadhboard: '  ' https://$MASTER_IP:$DASHBOARD_PORT/
-echo Alertmanager:   http://$MASTER_IP:$ALERTMANAGER_PORT/
-echo Grafana: '    ' http://$MASTER_IP:$GRAFANA_PORT/
-echo Prometheus: ' ' http://$MASTER_IP:$PROMETHEUS_PORT/
+echo Dadhboard: '  ' https://\$MASTER_IP:\$DASHBOARD_PORT/
+echo Alertmanager:   http://\$MASTER_IP:\$ALERTMANAGER_PORT/
+echo Grafana: '    ' http://\$MASTER_IP:\$GRAFANA_PORT/
+echo Prometheus: ' ' http://\$MASTER_IP:\$PROMETHEUS_PORT/
 " > get_servers.sh
 sudo chmod +x get_servers.sh
 
@@ -208,11 +208,14 @@ echo '###################################################'
 
 echo ======================================================================================
 echo 'kubeconfig.yaml:'
+echo '---------------------------------------------------'
 cat kubeconfig.yaml
 echo ======================================================================================
 echo 'Command to join nodes:'
+echo '---------------------------------------------------'
 ./get_join_command.sh
 echo ======================================================================================
 echo 'Servers:'
+echo '---------------------------------------------------'
 ./get_servers.sh
 echo ======================================================================================
