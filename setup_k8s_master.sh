@@ -124,7 +124,6 @@ echo '---------------------------------------------------'
 echo 'Configure Prometheus, Alertmanager, Grafana'
 # Step 1: Clone kube-prometheus project
 # Use git command to clone kube-prometheus project to your local system:
-cd ..
 
 git clone https://github.com/prometheus-operator/kube-prometheus.git
 # Navigate to the kube-prometheus directory:
@@ -133,7 +132,7 @@ cd kube-prometheus
 # Step 2: Create monitoring namespace, CustomResourceDefinitions & operator pod
 # Create a namespace and required CustomResourceDefinitions:
 kubectl create -f manifests/setup
-sleep 100
+sleep 200
 # The namespace created with CustomResourceDefinitions is named monitoring:
 kubectl get ns monitoring
 # Confirm that Prometheus operator pods are running:
@@ -142,13 +141,11 @@ kubectl get pods -n monitoring
 # Step 3: Deploy Prometheus Monitoring Stack on Kubernetes
 # Once you confirm the Prometheus operator is running you can go ahead and deploy Prometheus monitoring stack.
 kubectl create -f manifests/
-sleep 100
+sleep 200
 # Give it few seconds and the pods should start coming online. This can be checked with the commands below:
 kubectl get pods -n monitoring
 # To list all the services created you’ll run the command:
 kubectl get svc -n monitoring
-
-cd ../K8s_setup
 
 # # Step 4: Access Prometheus, Grafana, and Alertmanager dashboards
 # # Method 1
@@ -178,6 +175,8 @@ sleep 5
 kubectl -n monitoring get svc  | grep NodePort
 
 ################################################################################
+
+cd ..
 
 echo "
 MASTER_IP=\$(hostname -I | cut -d' ' -f1)
