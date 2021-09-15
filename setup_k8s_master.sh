@@ -1,6 +1,11 @@
 #!/bin/bash
 
-# Step 5: Initialize master node
+echo '###################################################'
+echo 'K8s Master Setup'
+echo '---------------------------------------------------'
+
+echo '---------------------------------------------------'
+echo 'Initialize master node'
 lsmod | grep br_netfilter
 sudo systemctl enable kubelet
 sudo kubeadm config images pull
@@ -15,12 +20,14 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 kubectl cluster-info
 
-# Step 6: Install network plugin on Master
+echo '---------------------------------------------------'
+echo 'Install network plugin on Master'
 kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
 sleep 5
 kubectl get nodes -o wide
 
-# Deploy Kubernetes Dashboard
+echo '---------------------------------------------------'
+echo 'Deploy Kubernetes Dashboard'
 #kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended.yaml
 wget https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended.yaml
 mv recommended.yaml kubernetes-dashboard-deployment.yml
@@ -31,10 +38,12 @@ kubectl get deployments -n kubernetes-dashboard
 kubectl get pods -n kubernetes-dashboard
 kubectl get service -n kubernetes-dashboard
 
-################################################################################
+
+echo '---------------------------------------------------'
+echo 'Create Admin service account'
+
 SA_NAME="kube-admin"
 
-# Create Admin service account
 echo "
 ---
 apiVersion: v1
@@ -110,8 +119,9 @@ users:
 current-context: ${serviceAccount}@${clusterName}
 " > kubeconfig.yaml
 
-################################################################################
-# configure Grafana
+
+echo '---------------------------------------------------'
+echo 'Configure Prometheus, Alertmanager, Grafana'
 # Step 1: Clone kube-prometheus project
 # Use git command to clone kube-prometheus project to your local system:
 cd ..
@@ -123,6 +133,7 @@ cd kube-prometheus
 # Step 2: Create monitoring namespace, CustomResourceDefinitions & operator pod
 # Create a namespace and required CustomResourceDefinitions:
 kubectl create -f manifests/setup
+sleep 30
 # The namespace created with CustomResourceDefinitions is named monitoring:
 kubectl get ns monitoring
 # Confirm that Prometheus operator pods are running:
@@ -131,6 +142,7 @@ kubectl get pods -n monitoring
 # Step 3: Deploy Prometheus Monitoring Stack on Kubernetes
 # Once you confirm the Prometheus operator is running you can go ahead and deploy Prometheus monitoring stack.
 kubectl create -f manifests/
+sleep 60
 # Give it few seconds and the pods should start coming online. This can be checked with the commands below:
 kubectl get pods -n monitoring
 # To list all the services created you’ll run the command:
@@ -155,10 +167,13 @@ cd ../K8s_setup
 #   type: NodePort
 # # Prometheus:
 KUBE_EDITOR="sed -i s/ClusterIP/NodePort/g" kubectl --namespace monitoring edit svc/prometheus-k8s
+sleep 5
 # # Alertmanager:
 KUBE_EDITOR="sed -i s/ClusterIP/NodePort/g" kubectl --namespace monitoring edit svc/alertmanager-main
+sleep 5
 # # Grafana:
 KUBE_EDITOR="sed -i s/ClusterIP/NodePort/g" kubectl --namespace monitoring edit svc/grafana
+sleep 5
 # # Confirm that the each of the services have a Node Port assigned:
 kubectl -n monitoring get svc  | grep NodePort
 
@@ -187,11 +202,17 @@ cat join_command
 sudo chmod +x get_join_command.sh
 ################################################################################
 
+echo '---------------------------------------------------'
+echo 'K8s Master Setup DONE'
+echo '###################################################'
+
 echo ======================================================================================
+echo 'kubeconfig.yaml:'
 cat kubeconfig.yaml
 echo ======================================================================================
-echo Command to join nodes:
+echo 'Command to join nodes:'
 ./get_join_command.sh
 echo ======================================================================================
+echo 'Servers:'
 ./get_servers.sh
 echo ======================================================================================

@@ -1,6 +1,11 @@
 #!/bin/bash
 
-# Step 2: Install kubelet, kubeadm and kubectl
+echo '###################################################'
+echo 'K8s Common Setup'
+echo '---------------------------------------------------'
+
+echo '---------------------------------------------------'
+echo 'Install kubelet, kubeadm and kubectl'
 # Once the servers are rebooted, add Kubernetes repository for Ubuntu 20.04 to all the servers.
 sudo apt update
 sudo apt -y install curl apt-transport-https
@@ -15,7 +20,8 @@ sudo apt-mark hold kubelet kubeadm kubectl
 # Confirm installation by checking the version of kubectl.
 kubectl version --client && kubeadm version
 
-#Step 3: Disable Swap
+echo '---------------------------------------------------'
+echo 'Disable Swap'
 #Turn off swap.
 #sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 sudo sed -e '/swap/ s/^#*/#/' -i /etc/fstab
@@ -32,7 +38,8 @@ EOF
 
 sudo sysctl --system
 
-# Step 4: Install Container runtime
+echo '---------------------------------------------------'
+echo 'Install Container runtime'
 # Installing Docker runtime:
 # Add repo and Install packages
 sudo apt update
@@ -58,7 +65,7 @@ sudo tee /etc/docker/daemon.json <<EOF
 EOF
 
 # Start and enable Services
-sudo systemctl daemon-reload 
+sudo systemctl daemon-reload
 sudo systemctl restart docker
 sudo systemctl enable docker
 
@@ -69,3 +76,7 @@ sudo tee -a /etc/containerd/config.toml <<< "plugins.cri.systemd_cgroup = true"
 sudo tee -a /etc/profile.d/kubeconfig.sh <<< "export KUBECONFIG=$HOME/.kube/config"
 sudo chmod +x /etc/profile.d/kubeconfig.sh
 /etc/profile.d/kubeconfig.sh
+
+echo '---------------------------------------------------'
+echo 'K8s Common Setup DONE'
+echo '###################################################'

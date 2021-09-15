@@ -1,5 +1,9 @@
 #!/bin/bash
 
+echo '###################################################'
+echo 'K8s Prepare Setup'
+echo '---------------------------------------------------'
+
 # Step 1: Install Kubernetes Servers
 # Once the servers are ready, update them.
 sudo apt update
@@ -19,4 +23,10 @@ sudo systemctl daemon-reload
 
 sleep 5
 
+
+echo '---------------------------------------------------'
+echo 'K8s Prepare Setup DONE'
+echo '###################################################'
+
+echo 'Rebooting...'
 sudo systemctl reboot
