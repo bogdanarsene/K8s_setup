@@ -133,7 +133,7 @@ cd kube-prometheus
 # Step 2: Create monitoring namespace, CustomResourceDefinitions & operator pod
 # Create a namespace and required CustomResourceDefinitions:
 kubectl create -f manifests/setup
-sleep 30
+sleep 100
 # The namespace created with CustomResourceDefinitions is named monitoring:
 kubectl get ns monitoring
 # Confirm that Prometheus operator pods are running:
@@ -142,7 +142,7 @@ kubectl get pods -n monitoring
 # Step 3: Deploy Prometheus Monitoring Stack on Kubernetes
 # Once you confirm the Prometheus operator is running you can go ahead and deploy Prometheus monitoring stack.
 kubectl create -f manifests/
-sleep 60
+sleep 100
 # Give it few seconds and the pods should start coming online. This can be checked with the commands below:
 kubectl get pods -n monitoring
 # To list all the services created you’ll run the command:
